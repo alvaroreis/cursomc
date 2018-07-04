@@ -1,6 +1,3 @@
-/**
- *
- */
 package br.gov.pa.iec.cursomc.model;
 
 import java.io.Serializable;
@@ -11,36 +8,35 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-/**
- * @author alvarobarros
- *
- */
-
 @Entity
-public class Categoria implements Serializable {
+public class Produto implements Serializable {
 
-    private static final long serialVersionUID = 6471684689262445696L;
+    private static final long serialVersionUID = 4729248887820835701L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private final Integer id;
 
-    private String nome;
+    private final String nome;
 
-    @ManyToMany(mappedBy ="categorias")
-    private final List<Produto> produtos = new ArrayList<>();
+    private final Double preco;
 
-    public Categoria() {
+    @ManyToMany
+    /* Cria tabela que ira fazer o "meio de campo" no relacionamento de muitos para muitos */
+    @JoinTable(name = "PRODUTO_CATEGORIA", joinColumns = @JoinColumn(name = "produto_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id"))
+    private final List<Categoria> categorias = new ArrayList<>();
 
-    }
-
-    public Categoria(final Integer id, final String nome) {
+    /* Construtor com parametros */
+    public Produto(final Integer id, final String nome, final Double preco) {
 
         super();
         this.id = id;
         this.nome = nome;
+        this.preco = preco;
     }
 
     public Integer getId() {
@@ -48,24 +44,19 @@ public class Categoria implements Serializable {
         return this.id;
     }
 
-    public void setId(final Integer id) {
-
-        this.id = id;
-    }
-
     public String getNome() {
 
         return this.nome;
     }
 
-    public void setNome(final String nome) {
+    public Double getPreco() {
 
-        this.nome = nome;
+        return this.preco;
     }
 
-    public List<Produto> getProdutos() {
+    public List<Categoria> getCategorias() {
 
-        return this.produtos;
+        return this.categorias;
     }
 
     @Override
@@ -89,7 +80,7 @@ public class Categoria implements Serializable {
         if (this.getClass() != obj.getClass()) {
             return false;
         }
-        final Categoria other = (Categoria) obj;
+        final Produto other = (Produto) obj;
         if (this.id == null) {
             if (other.id != null) {
                 return false;
